@@ -1,0 +1,62 @@
+
+<div id="page-wrapper">
+	<h1>
+	</h1>
+	<div class="container-fluid">
+		<h1>
+		</h1>
+		<%= render 'shared/dosFilasVistaShow', tituloVentana: "Frascos preparados de: #{@frascoU.fetch(:nomAp)}"%>
+
+		<%#= link_to 'Edit', edit_frasco_path(@frasco) %>
+
+		<table>
+			<thead>
+				<tr>
+					<th colspan="3"></th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<% @frascoU.fetch(:frascos).each do |fra| %>
+				<tr>
+					<td></td>
+					<% strNoC = "" %>
+					<% if fra.fetch(:status) == 0 %>
+					<% 	strEntregado = "En espera de retiro" %>
+					<% elsif fra.fetch(:status) == -1 %>
+					<% 	strEntregado = "NO RETIRADO" %>
+					<% else %>
+					<% 	strEntregado = "Entregado el #{fra.fetch(:fEnt)}" %>
+					<% end %>
+					<% if fra.fetch(:fCre) == "" %>
+					<% 	strEntregado = "NO PREPARADO" %>
+					<%  strNoC = "--/--/--" %>
+					<% end %>
+					<td><i>Frasco <%= fra.fetch(:idFra) %>.	</i> <b>Solicitado:</b>  <%=strNoC+""+fra.fetch(:fCre)%>	<b>Estado:</b> <%=strEntregado%></td>
+					<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+					<% if fra.fetch(:status) == 0 && fra.fetch(:fCre) != "" %>
+					<% if Date.parse(fra.fetch(:fCre)) < Date.parse(Time.new.strftime("%Y-%m-%d"))%>
+					<td>						
+						<%=link_to "Entregar Frasco",frascos_update_path(@frascoU.fetch(:id),fra.fetch(:idFra),0), :class => "btn btn-success btn-xs", :method => :post%>						
+					</td>
+					<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+					<td>						
+						<%=link_to "Marcar como NO RETIRADO",frascos_update_path(@frascoU.fetch(:id),fra.fetch(:idFra),1), :class => "btn btn-danger btn-xs", :method => :post%>						
+					</td>
+					<% else %>
+					<td><div class="alert alert-warning">
+					<strong>Cuidado!</strong> Revise la hora del sistema. Una fecha de solicitud es mayor.
+					</div></td>
+					<%end%>
+					<%end%>
+				</tr>
+				<tr><td>&nbsp</td></tr>
+				<% end %>
+			</tbody>
+		</table>
+
+		<h1>&nbsp</h1>
+		<%= link_to "Regresar", frascos_path %>
+
+	</div>	
+</div>
